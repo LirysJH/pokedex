@@ -1,0 +1,11 @@
+.Pokemons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 55%;
+  border: 1px solid #000;
+}
+/*# sourceMappingURL=Pokemons.css.map */
