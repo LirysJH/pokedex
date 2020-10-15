@@ -5,7 +5,19 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   width: 55%;
+  height: 80vh;
+  border: 1px solid #000;
+  padding: 5px;
+  overflow-y: scroll;
+}
+
+.Pokemons .box {
+  margin: 20px 15px;
+  width: 180px;
+  height: 240px;
   border: 1px solid #000;
 }
 /*# sourceMappingURL=Pokemons.css.map */
