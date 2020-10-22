@@ -15,9 +15,42 @@
 }
 
 .Pokemons .box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   margin: 20px 15px;
   width: 180px;
   height: 240px;
   border: 1px solid #000;
+}
+
+.Pokemons .box .icon {
+  width: 150px;
+  height: 150px;
+}
+
+.Pokemons .box .icon, .Pokemons .box .container {
+  margin: 10px;
+}
+
+.Pokemons .box .container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 95%;
+}
+
+.Pokemons .box .container__block {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 /*# sourceMappingURL=Pokemons.css.map */
