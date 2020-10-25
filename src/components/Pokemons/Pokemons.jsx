@@ -1,124 +1,178 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './css/Pokemons.css';
 
 export const Pokemons = (props) => {
 
-    let limitAmount = 12;
+    let [limitAmount, setlimitAmount] = useState(12);
+
     // const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
     const API_URL = `http://pokeapi.co/api/v2/pokemon/?limit=${limitAmount}`;
 
     const [pokemons, setPokemons] = useState([]);
     const [pokemonsData, setPokemonsData] = useState([]);
     const [pokemonsTypes, setPokemonsTypes] = useState([]);
+    const [pokemonDescription, setPokemonDescription] = useState([]);
 
     const typesAndColors = {
-        "normal": 
-        {  
+        "normal":
+        {
             backgroundColor: "#A3CB38",
             color: "#000"
         },
         "fighting":
-        {  
+        {
             backgroundColor: "#3B3B98",
             color: "#000"
         },
         "flying":
-        {  
-            backgroundColor:  "#9AECDB",
+        {
+            backgroundColor: "#9AECDB",
             color: "#000"
         },
-        "poison": 
-        {  
+        "poison":
+        {
             backgroundColor: "#a29bfe",
             color: "#000"
         },
-        "ground": 
-        {  
+        "ground":
+        {
             backgroundColor: "#4b4b4b",
             color: "#000"
         },
-        "rock": 
-        {  
+        "rock":
+        {
             backgroundColor: "#ccae62",
             color: "#000"
         },
-        "bug": 
-        {  
+        "bug":
+        {
             backgroundColor: "#badc58",
             color: "#000"
         },
-        "ghost": 
-        {  
+        "ghost":
+        {
             backgroundColor: "#dfe6e9",
             color: "#000"
         },
-        "steel": 
-        {  
+        "steel":
+        {
             backgroundColor: "#95afc0",
             color: "#000"
         },
-        "fire": 
-        {  
+        "fire":
+        {
             backgroundColor: "#ff3838",
             color: "#000"
         },
-        "water": 
-        {  
+        "water":
+        {
             backgroundColor: "#3498db",
             color: "#000"
         },
-        "grass": 
-        {  
+        "grass":
+        {
             backgroundColor: "#2ecc71",
             color: "#000"
         },
-        "electric": 
-        {  
+        "electric":
+        {
             backgroundColor: "#fdcb6e",
             color: "#000"
         },
-        "psychic": 
-        {  
+        "psychic":
+        {
             backgroundColor: "#BDC581",
             color: "#000"
         },
-        "ice": 
-        {  
+        "ice":
+        {
             backgroundColor: "#c7ecee",
             color: "#000"
         },
-        "dragon": 
-        {  
+        "dragon":
+        {
             backgroundColor: "#30336b",
             color: "#fff"
         },
-        "dark": 
-        {  
+        "dark":
+        {
             backgroundColor: "#2C3A47",
             color: "#fff"
         },
-        "fairy": 
-        {  
+        "fairy":
+        {
             backgroundColor: "#e056fd",
             color: "#000"
         },
-        "unknown": 
-        {  
+        "unknown":
+        {
             backgroundColor: "#000",
             color: "#000"
         },
-        "shadow": 
-        {  
+        "shadow":
+        {
             backgroundColor: "#636e72",
             color: "#000"
         }
     };
 
-    useEffect(() => {
-        loadSetData();
-    }, []);
+    const onPokemonClick = useCallback((event) => {
 
-    const loadSetData = async () => {
+        let name = event.target.getAttribute('data-name');
+
+        pokemonsData.forEach(p => {
+            if (p.name === name) {
+
+                if (event.target !== null && name) {
+                    setPokemonDescription([]);
+                    setPokemonDescription(
+                        <div className="details">
+                            <img
+                                src={p.sprites.front_default}
+                                alt="pokemon-img"
+                                title={p.name}
+                                className="icon"
+                            />
+                            {p.name}
+                        </div>
+                    );
+                }
+            }
+
+            // return [];
+        });
+
+
+
+    }, [pokemonsData]);
+
+    const buildTypesBlock = useCallback((arr) => {
+        let items = [],
+            itemSet = [];
+
+
+        arr.forEach(element => {
+            element.forEach(el => {
+                const styles = {
+                    backgroundColor: typesAndColors[el].backgroundColor,
+                    color: typesAndColors[el].color
+                };
+
+                itemSet.push(
+                    <div className="container__block" style={styles}>
+                        {el}
+                    </div>
+                );
+            })
+
+            items.push(itemSet);
+            itemSet = [];
+        })
+
+        return items;
+    }, [typesAndColors]);
+
+    const loadSetData = useCallback(async () => {
         const response = await fetch(API_URL);
         // const response = await fetch(PROXY_URL + API_URL);
         const data = await response.json();
@@ -131,7 +185,7 @@ export const Pokemons = (props) => {
             pokeData = [];
 
         await Promise.all(
-            data.results.map(async el => {
+            pokemons.map(async el => {
                 responsePokeData = await fetch(el.url);
                 responseObject = await responsePokeData.json();
                 pokeData.push(responseObject);
@@ -151,56 +205,66 @@ export const Pokemons = (props) => {
             }
             allTypes.push(pokemonTypes);
             pokemonTypes = [];
+
+            return [];
         });
 
         allTypes = buildTypesBlock(allTypes);
         setPokemonsTypes(allTypes);
-    }
+    }, [API_URL, buildTypesBlock, pokemons]);
 
-    const buildTypesBlock = (arr) => {
-        let items = [],
-            itemSet = [];
-        
+    useEffect(() => {
+        document.querySelector(".wrapper").addEventListener("click", onPokemonClick);
 
-        arr.forEach(element => {
-            element.forEach(el => {
-                const styles = {
-                    backgroundColor: typesAndColors[el].backgroundColor,
-                    color: typesAndColors[el].color
-                };
+        loadSetData();
 
-                itemSet.push(
-                    <div className="container__block" style={ styles }>
-                        { el }
-                    </div>
-                );
-            })
+        return () => {
+            document.querySelector(".wrapper").removeEventListener("click", onPokemonClick);
+        };
+    }, [loadSetData, onPokemonClick]);
 
-            items.push(itemSet);
-            itemSet = [];
-        })
+    // load next pokemons chunk
 
-        return items;
+    const loadMore = () => {
+        console.log(limitAmount);
+        // setlimitAmount(limitAmount + 12);
+        // console.log(limitAmount);
     }
 
     return (
         <div className="Pokemons">
-            {
-                pokemonsData.map((p, id) => (
-                    <div className="box" key={ id }>
-                        <img
-                            src={ p.sprites.front_default }
-                            alt="pokemon-img"
-                            title={ p.name }
-                            className="icon"
-                        />
-                        { p.name}
-                        <div className="container">
-                            { pokemonsTypes[id] }
-                        </div>
-                    </div>
-                ))
-            }
+            <div className="column pokemons-list">
+                <div className="wrapper">
+                    {
+                        pokemonsData.map((p, id) => (
+                            <div className="box" key={id}>
+                                <img
+                                    src={p.sprites.front_default}
+                                    alt="pokemon-img"
+                                    title={p.name}
+                                    className="icon"
+                                    data-name={p.name}
+                                />
+                                { p.name}
+                                <div className="container">
+                                    {pokemonsTypes[id]}
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+                <button
+                    className="btn"
+                    type="button"
+                    onClick={loadMore}
+                >
+                    Load more
+                </button>
+            </div>
+
+            <div className="column description">
+                {pokemonDescription}
+            </div>
         </div>
     )
 }
