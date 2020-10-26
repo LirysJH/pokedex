@@ -18,7 +18,6 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding: 10px;
 }
 
 .Pokemons .column.description .details {
@@ -34,11 +33,32 @@
           align-items: center;
   padding: 10px;
   border: 1px solid #000;
+  width: 200px;
+  height: 480px;
 }
 
 .Pokemons .column.description .details .icon {
   width: 150px;
   height: 150px;
+}
+
+.Pokemons .column.description .details .stats {
+  margin: 5px;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.Pokemons .column.description .details .stats .cell {
+  overflow: hidden;
+  text-align: center;
+  padding: 5px;
+  word-wrap: break-word;
+  border: 1px solid #000;
+}
+
+.Pokemons .column.description .details .stats .cell.wide-cell {
+  width: 60px;
 }
 
 .Pokemons .column.pokemons-list {
