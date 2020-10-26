@@ -6,7 +6,7 @@ export const Pokemons = (props) => {
     let [limit, setlimit] = useState(12);
 
     // const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
-    const API_URL = `http://pokeapi.co/api/v2/pokemon/?limit=999`;
+    const API_URL = `https://pokeapi.co/api/v2/pokemon/?limit=999`;
 
     const [pokemons, setPokemons] = useState([]);
     const [pokemonsData, setPokemonsData] = useState([]);
