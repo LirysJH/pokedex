@@ -3,10 +3,10 @@ import './css/Pokemons.css';
 
 export const Pokemons = (props) => {
 
-    let [limitAmount, setlimitAmount] = useState(12);
+    let [limit, setlimit] = useState(12);
 
     // const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
-    const API_URL = `http://pokeapi.co/api/v2/pokemon/?limit=${limitAmount}`;
+    const API_URL = `http://pokeapi.co/api/v2/pokemon/?limit=999`;
 
     const [pokemons, setPokemons] = useState([]);
     const [pokemonsData, setPokemonsData] = useState([]);
@@ -120,8 +120,50 @@ export const Pokemons = (props) => {
 
         let name = event.target.getAttribute('data-name');
 
-        pokemonsData.forEach(p => {
+        pokemonsData.map(p => {
             if (p.name === name) {
+                
+                let pokemon = `${p.name} #`;
+
+                if ( +p.id >= 100 ) {
+                    pokemon += `${p.id}`;
+                } else
+                if ( +p.id < 100 && +p.id > 9 ) {
+                    pokemon += `0${p.id}`;
+                } else {
+                    pokemon += `00${p.id}`;
+                }
+
+                const stats = {
+                    attack: 0,
+                    defense: 0,
+                    hp: 0,
+                    spAttack: 0,
+                    spDefense: 0,
+                    speed: 0
+                };
+
+                p.stats.forEach(s => {                    
+
+                    if (s.stat.name === "attack") {
+                        stats.attack = s.base_stat
+                    }
+                    if (s.stat.name === "defense") {
+                        stats.defense = s.base_stat
+                    }
+                    if (s.stat.name === "hp") {
+                        stats.hp = s.base_stat
+                    }
+                    if (s.stat.name === "special-attack") {
+                        stats.spAttack = s.base_stat
+                    }
+                    if (s.stat.name === "special-defense") {
+                        stats.spDefense = s.base_stat
+                    }
+                    if (s.stat.name === "speed") {
+                        stats.speed = s.base_stat
+                    }
+                });
 
                 if (event.target !== null && name) {
                     setPokemonDescription([]);
@@ -133,23 +175,88 @@ export const Pokemons = (props) => {
                                 title={p.name}
                                 className="icon"
                             />
-                            {p.name}
+                            { pokemon }
+                            <table className="stats">
+                                <tbody>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            Attack
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {stats.attack}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            Defense
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {stats.defense}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            HP
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {stats.hp}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            SP Attack
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {stats.spAttack}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            SP Defense
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {stats.spDefense}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            Speed
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {stats.speed}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            Weight
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {p.weight}
+                                        </td>
+                                    </tr>
+                                    <tr className="row">
+                                        <td className="cell">
+                                            Total moves
+                                        </td>
+                                        <td className="cell wide-cell">
+                                            {p.moves.length}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     );
                 }
             }
 
-            // return [];
+            return [];
         });
-
-
 
     }, [pokemonsData]);
 
     const buildTypesBlock = useCallback((arr) => {
         let items = [],
             itemSet = [];
-
 
         arr.forEach(element => {
             element.forEach(el => {
@@ -226,9 +333,7 @@ export const Pokemons = (props) => {
     // load next pokemons chunk
 
     const loadMore = () => {
-        console.log(limitAmount);
-        // setlimitAmount(limitAmount + 12);
-        // console.log(limitAmount);
+        setlimit(limit + 12);
     }
 
     return (
@@ -236,7 +341,7 @@ export const Pokemons = (props) => {
             <div className="column pokemons-list">
                 <div className="wrapper">
                     {
-                        pokemonsData.map((p, id) => (
+                        pokemonsData.slice(0, limit).map((p, id) => (
                             <div className="box" key={id}>
                                 <img
                                     src={p.sprites.front_default}
@@ -247,7 +352,7 @@ export const Pokemons = (props) => {
                                 />
                                 { p.name}
                                 <div className="container">
-                                    {pokemonsTypes[id]}
+                                    { pokemonsTypes[id] }
                                 </div>
                             </div>
                         ))
@@ -263,7 +368,7 @@ export const Pokemons = (props) => {
             </div>
 
             <div className="column description">
-                {pokemonDescription}
+                { pokemonDescription }
             </div>
         </div>
     )
